@@ -1,6 +1,7 @@
 import { ENV } from "../config/env.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // Register the User
 export const register = async (req, res) => {
@@ -71,6 +72,7 @@ export const login = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.error("Login Error", error);
     res.status(500).json({ message: "Login Failed" });
   }
 };
