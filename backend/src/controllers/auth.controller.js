@@ -1,5 +1,6 @@
 import { ENV } from "../config/env.js";
 import User from "../models/user.model.js";
+import bcrypt from "bcrypt";
 
 // Register the User
 export const register = async (req, res) => {
@@ -16,7 +17,7 @@ export const register = async (req, res) => {
     }
 
     // hashing the password
-    const hashedPassword = await bcrypt.hah(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // create user
     const user = await User.create({
