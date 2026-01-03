@@ -1,28 +1,25 @@
 import jwt from "jsonwebtoken";
-import { ENV } from "../config/env";
+import { ENV } from "../config/env.js";
 
-const authMiddleware = () => {
+const authMiddleware = (req, res, next) => {
   try {
-    // get tokken from header
+    // GETTING TOCKEN
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res
         .status(401)
-        .json({ message: "Access denied. no token recieved" });
+        .json({ message: "Access denied. No token provided" });
     }
-
-    // extract token
+    
+    // extract and decoding token
     const token = authHeader.split(" ")[1];
-
-    // verify the tocken
     const decoded = jwt.verify(token, ENV.JWT_SECRET);
 
     req.user = decoded;
-
-    //   continuew to next middleware
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired Tocken" });
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 
