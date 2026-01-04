@@ -1,244 +1,139 @@
-# Streaming-Application-FullStack
+# Streaming Application (MERN)
 
-🎥 Streaming-Application-FullStack — A MERN video upload, processing, and streaming platform
+A full‑stack streaming application built with the MERN stack (MongoDB, Express, React, Node). This repository contains a backend API (Node/Express + MongoDB) and a frontend (React) to upload, manage, and stream video content.
 
-A full-stack application that lets users upload videos, receive real-time processing updates, and stream videos using HTTP Range requests. Built with React (Vite) on the frontend and Node.js + Express + MongoDB on the backend. Features JWT authentication, role-based access control (Admin / Editor / Viewer), background processing with Socket.io updates, and secure, seekable video streaming.
-
----
-
-## Table of Contents
-
-- [Highlights](#highlights)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Project structure](#project-structure)
-- [Requirements](#requirements)
-- [Environment variables](#environment-variables)
-- [Quick start (local)](#quick-start-local)
-  - [Backend](#backend)
-  - [Frontend](#frontend)
-  - [Docker (backend)](#docker-backend)
-- [API (overview)](#api-overview)
-- [Video flow & streaming details](#video-flow--streaming-details)
-- [Realtime processing (Socket.io)](#realtime-processing-socketio)
-- [Security considerations](#security-considerations)
-- [Future improvements](#future-improvements)
-- [Contributing](#contributing)
-- [Author](#author)
-- [License](#license)
-
----
-
-## Highlights
-
-- JWT auth with persistent login
-- Role-based access control (Admin / Editor / Viewer)
-- Multipart video uploads with file-size/type validation
-- Background (mock) video processing with progress updates via Socket.io
-- HTTP Range-based streaming for fast playback & seeking (206 Partial Content)
-- Docker-ready backend, MongoDB Atlas ready for production
-
----
+> Note: This README is an improved, consolidated guide. For exact API routes and front-end behaviors, check the files under `backend/src/routes` and the `frontend` directory.
 
 ## Features
+- User authentication (register / login / protected routes)
+- Role-based middleware (admin / user)
+- Video upload and storage (local `uploads` directory)
+- Video streaming / serving endpoints
+- Simple administration endpoints for managing videos/streams
 
-- Register & login users (JWT)
-- Role-based permissions for managing and viewing videos
-- Secure upload endpoint with server-side validation
-- Local storage for uploaded files + MongoDB for metadata
-- Processing state tracking and real-time progress events
-- Stream large files efficiently with byte-range support
-- React frontend with protected routes and persistent auth
+## Tech stack
+- Backend: Node.js, Express
+- Database: MongoDB (Mongoose)
+- Frontend: React (create-react-app or similar)
+- Authentication: JWT
+- File uploads: multer (uploads stored under `backend/uploads`)
 
----
+## Repository structure (found in the repo)
+The repository root contains two main folders: `backend` and `frontend`. Below is the structure discovered:
 
-## Architecture
+```
+.
+├── .gitignore
+├── README.md
+├── backend
+│   ├── .env
+│   ├── node_modules/
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── src
+│   │   ├── app.js
+│   │   ├── server.js
+│   │   ├── config
+│   │   │   ├── db.js
+│   │   │   └── env.js
+│   │   ├── controllers
+│   │   │   ├── auth.controller.js
+│   │   │   ├── stream.controller.js
+│   │   │   └── video.controller.js
+│   │   ├── middlewares
+│   │   │   ├── auth.middleware.js
+│   │   │   ├── role.middleware.js
+│   │   │   └── upload.middleware.js
+│   │   ├── models
+│   │   │   ├── user.model.js
+│   │   │   └── video.model.js
+│   │   ├── routes/           (routes directory - check exact files here)
+│   │   └── services/         (services directory - check exact files here)
+│   └── uploads/              (uploaded video files)
+└── frontend
+    └── (React app files - inspect this folder for package.json, src/, public/, etc.)
+```
 
-Frontend (React + Vite)
-  ↕ REST API (JWT auth)
-Backend (Node.js + Express)
-  ├─ MongoDB (metadata, users)
-  ├─ File storage (local `uploads/`)
-  └─ Socket.io (processing progress)
+If you want, I can produce a more detailed tree by listing the contents of `backend/src/routes` and the `frontend` directory.
 
----
-
-## Project structure
-
-Streaming-Application-FullStack/
-│
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── middlewares/
-│   │   ├── models/
-│   │   ├── services/
-│   │   └── config/
-│   ├── uploads/
-│   └── server.js
-│
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── api/
-│   │   └── services/
-│   └── main.jsx
-│
-└── README.md
-
----
-
-## Requirements
-
-- Node.js v16+ (or later)
+## Prerequisites
+- Node.js (16+ recommended)
 - npm or yarn
-- MongoDB Atlas account (or a local MongoDB instance)
-- Docker (optional)
-
----
+- MongoDB instance (local or Atlas)
+- (Optional) ffmpeg or other video processing tools if you add transcoding
 
 ## Environment variables
+The backend includes a `.env` file (present in `backend/.env`). Typical variables you should set (example):
 
-Create a `.env` file in `backend/`:
-
+```
 PORT=5000
-MONGODB_URI=your_mongodb_atlas_uri
+MONGODB_URI=mongodb://localhost:27017/streaming-app
 JWT_SECRET=your_jwt_secret
-MAX_UPLOAD_SIZE=500MB (optional/custom)
-NODE_ENV=development
-
-Add any service-specific variables as needed (e.g., socket settings, file size limits).
-
----
-
-## Quick start (local)
-
-### Backend
-
-1. cd backend
-2. npm install
-3. Create `.env` (see above)
-4. npm run dev
-
-By default the backend runs at: http://localhost:5000
-
-### Frontend
-
-1. cd frontend
-2. npm install
-3. npm run dev
-
-Frontend default: http://localhost:5173
-
-### Docker (backend)
-
-Build and run backend in Docker (example):
-
-```bash
-# build (from repo root)
-docker build -t video-backend ./backend
-
-# run
-docker run -p 5000:5000 --env-file ./backend/.env -v $(pwd)/backend/uploads:/app/uploads video-backend
+TOKEN_EXPIRES_IN=7d
+UPLOAD_DIR=uploads
 ```
 
----
+Check `backend/src/config/env.js` and `backend/.env` to confirm the exact names used by the app.
 
-## API (overview)
+## Backend — run locally
+1. Open a terminal and go to the backend:
+   - cd backend
+2. Install dependencies:
+   - npm install
+3. Configure environment:
+   - Create or update `.env` (or use the provided one, but do NOT commit secrets).
+4. Start the server:
+   - npm start
+   - or for development (if using nodemon): npm run dev
+5. The server typically runs at http://localhost:PORT (see `.env` / `server.js` for exact port).
 
-All protected endpoints require `Authorization: Bearer <token>` header.
+API routes live in `backend/src/routes`; controllers are in `backend/src/controllers`. Check `app.js` for middlewares and route wiring.
 
-- POST /api/auth/register — Register a new user
-- POST /api/auth/login — Login and receive JWT
-- POST /api/videos/upload — Upload a video file (multipart/form-data)
-- GET /api/videos — List videos (user-specific or all, based on role)
-- GET /api/videos/:id — Get video metadata
-- GET /api/stream/:videoId — Stream video (supports Range requests)
+Uploaded files are stored in `backend/uploads` — ensure the directory exists and is writable.
 
-Example upload (curl):
-```bash
-curl -X POST "http://localhost:5000/api/videos/upload" \
-  -H "Authorization: Bearer $TOKEN" \
-  -F "file=@/path/to/video.mp4" \
-  -F "title=My video"
-```
+## Frontend — run locally
+1. Open a terminal and go to the frontend:
+   - cd frontend
+2. Install dependencies:
+   - npm install
+3. Start the dev server:
+   - npm start
+4. The front-end typically runs at http://localhost:3000 and communicates with the backend (set the API base URL in your frontend config/environment).
 
----
+If you want to run both servers concurrently, use two terminals or a tool like `concurrently` in the root (not currently included).
 
-## Video flow & streaming details
+## Helpful pointers / where to look for key logic
+- Authentication logic: `backend/src/controllers/auth.controller.js` and `backend/src/middlewares/auth.middleware.js`
+- Video upload logic: `backend/src/controllers/video.controller.js` and `backend/src/middlewares/upload.middleware.js`
+- Video streaming / stream endpoints: `backend/src/controllers/stream.controller.js`
+- DB connection: `backend/src/config/db.js`
+- Models: `backend/src/models/*.js`
+- Routes: `backend/src/routes` (exposes endpoints wired to controllers)
 
-Upload flow:
-1. Client uploads multipart video to `/api/videos/upload`.
-2. Server saves file to `backend/uploads/` and creates a DB record.
-3. A background service performs mock video processing (e.g., sensitivity check).
-4. Processing status and progress are emitted via Socket.io.
-5. When processing finishes, the video is marked available for streaming.
-
-Streaming:
-- The stream endpoint supports HTTP Range headers so browsers/media players can request partial content.
-- With a `Range` header, the server responds with `206 Partial Content` and appropriate `Content-Range`, `Accept-Ranges`, and `Content-Length` headers.
-- Ensure the stream endpoint validates JWT and checks user permissions before serving the file.
-
----
-
-## Realtime processing (Socket.io)
-
-- Server emits events for processing progress and completion.
-- Typical events:
-  - `processing:progress` — { videoId, progress } (progress 0–100)
-  - `processing:complete` — { videoId, metadata }
-  - `processing:error` — { videoId, error }
-
-Client typically connects after login and joins relevant rooms for updates.
-
----
-
-## Security considerations
-
-- Validate file type and size server-side to prevent abuse.
-- Protect streaming and upload endpoints with JWT & role checks.
-- Sanitize filenames or use unique names/IDs to avoid collisions and path traversal.
-- Consider rate limiting on critical endpoints and virus/malware scanning for uploads.
-- For production, prefer object storage (S3/GCS) and a CDN for scalable streaming.
-
----
-
-## Future improvements
-
-- Move uploaded files to cloud storage (AWS S3 / GCP)
-- Generate thumbnails / poster images for videos
-- Add refresh tokens & token revocation flows
-- AI content moderation / automated captions
-- Pagination, search, and filters for video lists
-- Admin dashboard and usage analytics
-- End-to-end tests, CI/CD pipeline, and monitoring
-- Serve video through CDN for high availability
-
----
+## Common commands (suggested)
+- Backend
+  - npm install
+  - npm start
+  - npm run dev (if configured)
+- Frontend
+  - npm install
+  - npm start
+- Tests (if added in future)
+  - npm test
 
 ## Contributing
+- Fork the repository
+- Create a feature branch
+- Make clear commits
+- Open a pull request describing your changes
 
-Contributions, issues, and feature requests are welcome. Please open an issue describing the change or enhancement first. For code contributions, fork the repo, create a feature branch, and open a pull request.
-
-Suggested workflow:
-1. Fork the repo
-2. Create a feature branch: git checkout -b feat/your-feature
-3. Commit changes and push
-4. Open a Pull Request with a clear description
-
----
-
-## Author
-
-Muhammed Muqhtadeer  
-Full Stack Developer | MERN Stack | Backend & Systems Enthusiast  
-GitHub: [MuqhtadeerM](https://github.com/MuqhtadeerM)
+## License & contact
+- Add a LICENSE file if you want a specific license.
+- For questions / contact: @MuqhtadeerM on GitHub.
 
 ---
 
-## License
-
-MIT — see LICENSE file for details.
+If you’d like, I can:
+- Produce a ready-to-use `.env.example`.
+- Create a more detailed README section that documents every API endpoint (I can infer them from `backend/src/routes` files).
+- Create a CONTRIBUTING.md or LICENSE file.
