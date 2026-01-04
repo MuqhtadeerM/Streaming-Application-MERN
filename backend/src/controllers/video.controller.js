@@ -1,6 +1,7 @@
 import Video from "../models/video.model.js";
 import path from "path";
 import fs from "fs";
+import { processVideo } from "../services/videoProcessing.service.js";
 
 export const uploadVideo = async (req, res) => {
   try {
@@ -60,6 +61,10 @@ export const uploadVideo = async (req, res) => {
       tenantId: req.user.tenantId,
     });
 
+    // trigger processing asynchronously
+    processVideo(video._id);
+
+    
     res.status(201).json({
       message: "Video uploaded successfully",
       videoId: video._id,
