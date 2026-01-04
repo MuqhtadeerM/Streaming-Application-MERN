@@ -6,7 +6,11 @@ import { initSocket } from "./services/socket.service.js";
 
 // need for socket.io this is to create server
 const server = http.createServer(app);
+
+// connexted to db
 connectDB();
+
+// innit socket.io
 initSocket(server);
 
 server.listen(ENV.PORT, () => {

@@ -10,12 +10,21 @@ export const initSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Client connected:", socket.id);
+    console.log("Client connected:", socket.id);
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
   });
 };
 
-export const emitProgress = (event, data) => {
+// emit progress
+export const emitProgress = (videoId, progress, status) => {
   if (io) {
-    io.emit(event, data);
+    io.emit("video-progress", {
+      videoId,
+      progress, 
+      status,
+    });
   }
 };
