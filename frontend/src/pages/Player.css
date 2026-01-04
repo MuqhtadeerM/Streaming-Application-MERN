@@ -1,0 +1,49 @@
+.player-container {
+  min-height: 100vh;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+}
+
+.player-card {
+  background: #ffffff;
+  padding: 30px;
+  width: 650px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.player-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.player-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.player-card input:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+.player-video {
+  display: flex;
+  justify-content: center;
+}
+
+.player-video video {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: black;
+}

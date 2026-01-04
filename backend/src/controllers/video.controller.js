@@ -64,7 +64,6 @@ export const uploadVideo = async (req, res) => {
     // trigger processing asynchronously
     processVideo(video._id);
 
-    
     res.status(201).json({
       message: "Video uploaded successfully",
       videoId: video._id,
@@ -75,5 +74,17 @@ export const uploadVideo = async (req, res) => {
       message: "Video upload failed",
       error: error.message,
     });
+  }
+};
+
+export const getVideos = async (req, res) => {
+  try {
+    const videos = await Video.find({
+      tenantId: req.user.tenantId,
+    }).sort({ createdAt: -1 });
+
+    res.json(videos);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch videos" });
   }
 };

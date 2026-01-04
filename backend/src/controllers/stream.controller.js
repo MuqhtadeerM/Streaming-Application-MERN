@@ -39,6 +39,8 @@ export const streamVideo = async (req, res) => {
       "Content-Length": contentLength,
       "Content-Type": video.mimeType,
     };
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Expose-Headers", "Content-Range");
 
     res.writeHead(206, headers);
 

@@ -1,0 +1,71 @@
+.upload-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #f4f6f8;
+  padding-top: 40px;
+}
+
+.upload-card {
+  background: #ffffff;
+  padding: 30px;
+  width: 420px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.upload-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.upload-card input[type="file"] {
+  margin-bottom: 15px;
+}
+
+.upload-card input,
+.upload-card textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.upload-card textarea {
+  resize: none;
+  height: 80px;
+}
+
+.upload-card input:focus,
+.upload-card textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+.upload-card button {
+  width: 100%;
+  padding: 10px;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.upload-card button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.upload-card button:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.progress-wrapper {
+  margin-top: 20px;
+}

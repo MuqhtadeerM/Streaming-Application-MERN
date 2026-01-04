@@ -1,31 +1,25 @@
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import "./Player.css";
 
 const Player = () => {
-  const [videoId, setVideoId] = useState("");
-
+  const [params] = useSearchParams();
+  const videoId = params.get("id");
   const token = localStorage.getItem("token");
 
+  if (!videoId) return <p>No video selected</p>;
+
   return (
-    <div>
-      <h2>Video Player</h2>
+    <div className="player-container">
+      <div className="player-card">
+        <h2>Video Player</h2>
 
-      <input
-        type="text"
-        placeholder="Enter Video ID"
-        value={videoId}
-        onChange={(e) => setVideoId(e.target.value)}
-      />
-
-      <br />
-      <br />
-
-      {videoId && (
-        <video
-          width="600"
-          controls
-          src={`http://localhost:5000/api/stream/${videoId}?token=${token}`}
-        />
-      )}
+        <div className="player-video">
+          <video
+            controls
+            src={`http://localhost:5000/api/stream/${videoId}?token=${token}`}
+          />
+        </div>
+      </div>
     </div>
   );
 };

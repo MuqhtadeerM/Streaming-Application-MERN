@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import socket from "../services/socket";
 import Progress from "../components/Progress";
+import "./Upload.css";
 
 const Upload = () => {
   const [video, setVideo] = useState(null);
@@ -48,48 +49,49 @@ const Upload = () => {
       setVideoId(res.data.videoId);
     } catch (error) {
       alert("Upload failed");
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2>Upload Video</h2>
+    <div className="upload-container">
+      <div className="upload-card">
+        <h2>Upload Video</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept="video/*"
-          onChange={(e) => setVideo(e.target.files[0])}
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="file"
+            accept="video/*"
+            onChange={(e) => setVideo(e.target.files[0])}
+          />
 
-        <br />
+          <input
+            type="text"
+            placeholder="Video Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
 
-        <input
-          type="text"
-          placeholder="Video Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-        <br />
+          <button type="submit" disabled={loading}>
+            {loading ? "Uploading..." : "Upload"}
+          </button>
+        </form>
 
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <br />
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
-
-      {videoId && <Progress progress={progress} status={status} />}
+        {videoId && (
+          <div className="progress-wrapper">
+            <Progress progress={progress} status={status} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

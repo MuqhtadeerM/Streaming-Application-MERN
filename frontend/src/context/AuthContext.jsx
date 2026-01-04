@@ -1,17 +1,25 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import api from "../api/axios";
 
-// store the login state globally
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  //   call thhe login api from backend
+  // 🔁 Restore auth on refresh
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // We trust token for now (backend validates it anyway)
+      setUser({ isAuthenticated: true });
+    }
+
+    setLoading(false);
+  }, []);
+
   const login = async (email, password) => {
-    setLoading(true);
-
     try {
       const res = await api.post("/api/auth/login", {
         email,
@@ -21,18 +29,14 @@ export const AuthProvider = ({ children }) => {
       const token = res.data.token;
       localStorage.setItem("token", token);
 
-      setUser({ email });
-
+      setUser({ email, isAuthenticated: true });
       return true;
     } catch (error) {
-      alert("Login Failed", error);
+      alert("Login failed");
       return false;
-    } finally {
-      setLoading(false);
     }
   };
 
-  //   clears the token form backend
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -45,4 +49,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line
 export const useAuth = () => useContext(AuthContext);
