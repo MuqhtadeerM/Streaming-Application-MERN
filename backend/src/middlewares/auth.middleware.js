@@ -5,15 +5,16 @@ const authMiddleware = (req, res, next) => {
   try {
     // GETTING TOCKEN
     const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : req.query.token;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!token) {
       return res
         .status(401)
         .json({ message: "Access denied. No token provided" });
     }
-    
-    // extract and decoding token
-    const token = authHeader.split(" ")[1];
+
     const decoded = jwt.verify(token, ENV.JWT_SECRET);
 
     req.user = decoded;
