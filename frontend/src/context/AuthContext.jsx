@@ -4,19 +4,17 @@ import api from "../api/axios";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // 🔁 Restore auth on refresh
-  useEffect(() => {
+  // ✅ Initialize user from localStorage (lazy init)
+  const [user, setUser] = useState(() => {
     const token = localStorage.getItem("token");
+    return token ? { isAuthenticated: true } : null;
+  });
 
-    if (token) {
-      // We trust token for now (backend validates it anyway)
-      setUser({ isAuthenticated: true });
-    }
+  const [loading, setLoading] = useState(false);
 
-    setLoading(false);
+  // ✅ No state mutation on mount anymore
+  useEffect(() => {
+    // Optional: token validation API can go here later
   }, []);
 
   const login = async (email, password) => {
@@ -33,6 +31,9 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (error) {
       alert("Login failed");
+      console.log(error);
+      setLoading(true);
+
       return false;
     }
   };
@@ -48,6 +49,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
 // eslint-disable-next-line
 export const useAuth = () => useContext(AuthContext);

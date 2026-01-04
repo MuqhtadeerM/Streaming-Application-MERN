@@ -1,12 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
-
 import Navbar from "./components/Navbar";
-import Login from "./pages/Login";
 import Upload from "./pages/Upload";
-import Player from "./pages/Player";
-import VideoList from "./pages/VideoList";
-import Register from "./pages/Register";
+import Player from "./pages/player/Player";
+import VideoList from "./pages/videolist/VideoList";
+import Register from "./pages/register/Register";
+import Login from "./pages/login/Login";
 
 const App = () => {
   const { user, loading } = useAuth();

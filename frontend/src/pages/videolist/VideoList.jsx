@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import "./VideoList.css";
 
@@ -12,12 +12,10 @@ const VideoList = () => {
       try {
         const res = await api.get("/api/videos");
         setVideos(res.data);
-      } catch (error) {
+      } catch {
         alert("Failed to load videos");
-        console.log(error);
       }
     };
-
     fetchVideos();
   }, []);
 
@@ -25,7 +23,7 @@ const VideoList = () => {
     <div className="video-list-container">
       <h2>Your Videos</h2>
 
-      {videos.length === 0 && <p>No videos uploaded yet</p>}
+      {videos.length === 0 && <p>No videos uploaded</p>}
 
       <div className="video-grid">
         {videos.map((video) => (

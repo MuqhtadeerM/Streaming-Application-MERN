@@ -1,6 +1,7 @@
 import { useState } from "react";
-import api from "../api/axios";
+import api from "../../api/axios";
 import "./Register.css";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -65,6 +66,12 @@ const Register = () => {
 
           <button type="submit">Register</button>
         </form>
+        <p style={{ textAlign: "center", marginTop: "12px" }}>
+          Already have an account?{" "}
+          <Link to="/Login" style={{ color: "#4f46e5" }}>
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
